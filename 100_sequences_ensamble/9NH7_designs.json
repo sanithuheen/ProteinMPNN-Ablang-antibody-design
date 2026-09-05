@@ -1,0 +1,402 @@
+[
+  {
+    "seed": 0,
+    "sequence": "SGGSFFRSTGSSSTLIDSISSSYYSD"
+  },
+  {
+    "seed": 1,
+    "sequence": "SGGTFRYSTGSGDTLVPSISSSYYLY"
+  },
+  {
+    "seed": 2,
+    "sequence": "SGFSFRYSTGGGDTLIDSISSSYYSD"
+  },
+  {
+    "seed": 3,
+    "sequence": "SGGTFSYSTGSSSSPIDSISSSNYFY"
+  },
+  {
+    "seed": 4,
+    "sequence": "SGFTTRYSTGSGGTLVDSISLSYYSD"
+  },
+  {
+    "seed": 5,
+    "sequence": "SGFTTRYSTGSGDTPIPSISSSYWFD"
+  },
+  {
+    "seed": 6,
+    "sequence": "SGFSFFYITGSGGSLIPSISSSYASD"
+  },
+  {
+    "seed": 7,
+    "sequence": "SGFTTSYSTGSGSTLIDSISLSYYFD"
+  },
+  {
+    "seed": 8,
+    "sequence": "SGFSFFYSTGGGDSPIPSISSSNWFS"
+  },
+  {
+    "seed": 9,
+    "sequence": "SGGTTIYITGSGSTPIPSISSSSYFS"
+  },
+  {
+    "seed": 10,
+    "sequence": "SGFSFRYSTGGSDTPIDSISSSNWFD"
+  },
+  {
+    "seed": 11,
+    "sequence": "SGFSFFYSTGNGSTLIDSISSSYYFD"
+  },
+  {
+    "seed": 12,
+    "sequence": "SGFSSIYSTGSSSSIVDSISSSYYFD"
+  },
+  {
+    "seed": 13,
+    "sequence": "SGFTSIYITNSSGTPIPSISSSYYFD"
+  },
+  {
+    "seed": 14,
+    "sequence": "SGGTFFSSTGGGDSPIDSISSSNYFV"
+  },
+  {
+    "seed": 15,
+    "sequence": "SGFTTIYSTGSSSSLVDSISSSYYSD"
+  },
+  {
+    "seed": 16,
+    "sequence": "SGGTSSYSTGSSSTLVDSISSSYYSV"
+  },
+  {
+    "seed": 17,
+    "sequence": "SGFSFFYSTGSSSTLIDSISSSYYSD"
+  },
+  {
+    "seed": 18,
+    "sequence": "SGGTTRYSTGSGSTLIDSISLSDYSD"
+  },
+  {
+    "seed": 19,
+    "sequence": "SGGTSIYSTGSGSSLIDSISSSYAFS"
+  },
+  {
+    "seed": 20,
+    "sequence": "SGGTTIYSTGGGSRLVDSISWSYARD"
+  },
+  {
+    "seed": 21,
+    "sequence": "SGFTTIYSTGSSDTPIPSLSSSYYFV"
+  },
+  {
+    "seed": 22,
+    "sequence": "SGFTTIYSTGSGSSLIDSISSSYYSS"
+  },
+  {
+    "seed": 23,
+    "sequence": "SGGTTRYSTGSGSTPIDSISLSDYFY"
+  },
+  {
+    "seed": 24,
+    "sequence": "SGGTFFYSSGSGSSLIPSISSSYWSD"
+  },
+  {
+    "seed": 25,
+    "sequence": "SGFTSIYSTGSGSTLIDSISSSYYSD"
+  },
+  {
+    "seed": 26,
+    "sequence": "SGFTSSYSTGSGGSIIPSISSSSAFD"
+  },
+  {
+    "seed": 27,
+    "sequence": "SGFSFFYSTGSGSSLIDSISSSYYSV"
+  },
+  {
+    "seed": 28,
+    "sequence": "SGGTTSSSTGGGGRLIDSISSSYAFD"
+  },
+  {
+    "seed": 29,
+    "sequence": "SGGTTIYITGSGGTLIDSISSSYYSD"
+  },
+  {
+    "seed": 30,
+    "sequence": "SGFTFFYITGSSSTLIPSISLSNYFD"
+  },
+  {
+    "seed": 31,
+    "sequence": "SGGSFFRSTGGGGTLVDSISSSYYSD"
+  },
+  {
+    "seed": 32,
+    "sequence": "SGKTFIYSTGSGSTPIDSISSSYYFD"
+  },
+  {
+    "seed": 33,
+    "sequence": "SGGTFFRSTGSSSTLIDSISSSYYSD"
+  },
+  {
+    "seed": 34,
+    "sequence": "SGGSFSSSTGGGSSLIDSISSSSWSV"
+  },
+  {
+    "seed": 35,
+    "sequence": "SGGTFSYSTGGGGSPIDSISSSYAFF"
+  },
+  {
+    "seed": 36,
+    "sequence": "SGFSSSYSTGSGSSPIPSISLSYAFF"
+  },
+  {
+    "seed": 37,
+    "sequence": "SGGTFFYITGSSGTLIPSISVSAATD"
+  },
+  {
+    "seed": 38,
+    "sequence": "SGFSTSSSTGSGSSVIPSISSSYYSV"
+  },
+  {
+    "seed": 39,
+    "sequence": "SGFTTIYSTGSGGTLIPSISSSSYSD"
+  },
+  {
+    "seed": 40,
+    "sequence": "SGFSFRYSTGSGSRLIDSISTSYASD"
+  },
+  {
+    "seed": 41,
+    "sequence": "SGFTTIYSTGSGSSLIDSISSSYAFF"
+  },
+  {
+    "seed": 42,
+    "sequence": "SGGTFFSSTGGGSSLIPSISSSSYSD"
+  },
+  {
+    "seed": 43,
+    "sequence": "SGFSFFYSTGSSSTLIESISSSYWSD"
+  },
+  {
+    "seed": 44,
+    "sequence": "SGGSFSSSTGGGGTPIPSISSSYYFD"
+  },
+  {
+    "seed": 45,
+    "sequence": "SGFSFRYSTGSSGSLIDSISSSYYSV"
+  },
+  {
+    "seed": 46,
+    "sequence": "SGGTSIYSTGSSSSIVDSISSSYWFD"
+  },
+  {
+    "seed": 47,
+    "sequence": "SGFTFFSSTGSGSSLIDSISLSNYSD"
+  },
+  {
+    "seed": 48,
+    "sequence": "SGFSSRYSTGSSGRLIDSISLSYAFF"
+  },
+  {
+    "seed": 49,
+    "sequence": "SGFSFSYSTGSGSSPISSGSLSYYFD"
+  },
+  {
+    "seed": 50,
+    "sequence": "SGFSTIYSTGSGDTLIDSISSSYYSD"
+  },
+  {
+    "seed": 51,
+    "sequence": "SGGSFSSSTGSGSTPIPSISSSNYFV"
+  },
+  {
+    "seed": 52,
+    "sequence": "SGFSFRYSTGSSGTLIDSISSSYYFD"
+  },
+  {
+    "seed": 53,
+    "sequence": "SGFTTRYSTGSSSSPIDSISSSSWFV"
+  },
+  {
+    "seed": 54,
+    "sequence": "SGFTTIYSTGSSSTLIDSISSSYYSD"
+  },
+  {
+    "seed": 55,
+    "sequence": "SGGSFFYSTGSGGSPIDSISSSSYFS"
+  },
+  {
+    "seed": 56,
+    "sequence": "SGFSSSYITGSGGRLIPSISSSSAFD"
+  },
+  {
+    "seed": 57,
+    "sequence": "SGFSFRYSTGSGSTLIDSISSSYYSV"
+  },
+  {
+    "seed": 58,
+    "sequence": "SGGTFIYSTGSSDTLIDSISLSNYFY"
+  },
+  {
+    "seed": 59,
+    "sequence": "SGFTSIYSTGSSSSLVSSISSSYALY"
+  },
+  {
+    "seed": 60,
+    "sequence": "SGFTTIYSTGSGSRLVDSISLSYAFF"
+  },
+  {
+    "seed": 61,
+    "sequence": "SGFTTRYSTGGGSTLIDSISLSYYSD"
+  },
+  {
+    "seed": 62,
+    "sequence": "SGGTFFYSTGGGGTLIPSISSSNYSD"
+  },
+  {
+    "seed": 63,
+    "sequence": "SGFSFFYSTGSSSSLIDSISLSTYFD"
+  },
+  {
+    "seed": 64,
+    "sequence": "SGFSFFYSTGSGSSLIDSISLSNYFD"
+  },
+  {
+    "seed": 65,
+    "sequence": "SGFTTIYSTGSGSSIIPSISSSSWSD"
+  },
+  {
+    "seed": 66,
+    "sequence": "SGFTTIYSTGSGGSLIDSISSSYWSY"
+  },
+  {
+    "seed": 67,
+    "sequence": "SGGSFSYSTGSGSSPIPSISLSNAFF"
+  },
+  {
+    "seed": 68,
+    "sequence": "SGFSFRYSTGGSSTIIDSISLSNYFV"
+  },
+  {
+    "seed": 69,
+    "sequence": "SGGTFFSITGSGDRLIPSISLSNAFF"
+  },
+  {
+    "seed": 70,
+    "sequence": "SGGTFFYITGSSDSPIPSISLSNAFF"
+  },
+  {
+    "seed": 71,
+    "sequence": "SGGTTIYSTGSGSSLLPTISSSSWFS"
+  },
+  {
+    "seed": 72,
+    "sequence": "SGFTTRYSTNSSDTLVSSISSSYYSD"
+  },
+  {
+    "seed": 73,
+    "sequence": "SGFTTSYITGSSGTLIPSISSSSYLY"
+  },
+  {
+    "seed": 74,
+    "sequence": "SGFTTIYSTGSSSSLIESISSSYAFD"
+  },
+  {
+    "seed": 75,
+    "sequence": "SGFSFFYSTGGGGSLIDSISSSYYFS"
+  },
+  {
+    "seed": 76,
+    "sequence": "SGGTFFSITGGSDTLIPSISSSYWSD"
+  },
+  {
+    "seed": 77,
+    "sequence": "SGFTFFYSTGSGSTLVDSISGSYYSD"
+  },
+  {
+    "seed": 78,
+    "sequence": "SGFTFFYSTGSGSTPVDSISLSYYFV"
+  },
+  {
+    "seed": 79,
+    "sequence": "SGGTFFSSTGGSSSPIDSISLSSFFD"
+  },
+  {
+    "seed": 80,
+    "sequence": "SGFSFRYSTGSGSSIVDSISLSYYFD"
+  },
+  {
+    "seed": 81,
+    "sequence": "SGFSFFYSTGSGGSPIDSISSSYAFV"
+  },
+  {
+    "seed": 82,
+    "sequence": "SGFSTSSSTGSGGSVIPSISSSSWSD"
+  },
+  {
+    "seed": 83,
+    "sequence": "SGFSFRYSTGSGSSPIDTISSSSWFY"
+  },
+  {
+    "seed": 84,
+    "sequence": "SGFFFSSSTGSGSSLIDSISSSYYFV"
+  },
+  {
+    "seed": 85,
+    "sequence": "SGFSFFYSTGSGSSLVDSISSSYYFS"
+  },
+  {
+    "seed": 86,
+    "sequence": "SGGSFFRSTGGGDRLVDSISVSVASD"
+  },
+  {
+    "seed": 87,
+    "sequence": "SGFTTSYITGSSDTLIPSISSSYWSD"
+  },
+  {
+    "seed": 88,
+    "sequence": "SGGTSIYSTGNGGRLIDSISLSYATD"
+  },
+  {
+    "seed": 89,
+    "sequence": "SGFTTSYSTGSGSSIVPSISSSYASD"
+  },
+  {
+    "seed": 90,
+    "sequence": "SGGSFFSSTGGGGTLIDSISSSYYFD"
+  },
+  {
+    "seed": 91,
+    "sequence": "SGGTFIYSTGSSSTLIDSISLSYYFD"
+  },
+  {
+    "seed": 92,
+    "sequence": "SGFTSIYSTGSSSTLIPSISRSSYSD"
+  },
+  {
+    "seed": 93,
+    "sequence": "SGFTTIYSTGSSDSLIPSISVSYYSD"
+  },
+  {
+    "seed": 94,
+    "sequence": "SGFTSIYSTGSSSSLIDSISLSNAFF"
+  },
+  {
+    "seed": 95,
+    "sequence": "SGFTTIYSTGSGSTLIPSISSSSWSD"
+  },
+  {
+    "seed": 96,
+    "sequence": "SGGTFFSSTGSSSSIIDSISSSYYSV"
+  },
+  {
+    "seed": 97,
+    "sequence": "SGFTFFYSTGSGSSLIDSISLSYAFD"
+  },
+  {
+    "seed": 98,
+    "sequence": "SGFTTSYSTGSSSSLIDSISSSYYST"
+  },
+  {
+    "seed": 99,
+    "sequence": "SGFSSIYTTGSSGSPIPSLSSSSYFS"
+  }
+]
