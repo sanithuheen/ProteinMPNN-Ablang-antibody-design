@@ -147,7 +147,6 @@ def organize_pdb_chains(pdb_filepath, chain_mapping, output_dir, pdb_id):
                     chains_atoms[chain_id] = []
                 chains_atoms[chain_id].append(line)
             elif line.startswith("CONECT"):
-                # Optional: We could keep CONECT records, but usually not needed for single chains
                 pass
                 
     # Map each chain to its role
@@ -191,9 +190,6 @@ def main():
     for pdb_id in PDB_IDS:
         raw_filepath = os.path.join(raw_dir, f"{pdb_id}.pdb")
         
-        # In the local environment, the user will download the file.
-        # In our offline sandbox, we explain that they can run this script to fetch and process.
-        # But we write it so it works seamlessly when run.
         if not os.path.exists(raw_filepath):
             raw_filepath = download_pdb(pdb_id, raw_dir)
             
