@@ -40,14 +40,6 @@ conflated:
 split into Ig domains (for a VHH: the whole chain is domain "H"; for an scFv:
 a "H" segment, then a non-Ig linker segment, then an "L" segment).
 
-Two things you must still supply/confirm before trusting results:
-  1. That `ablang.pretrained()` can reach
-     https://opig.stats.ox.ac.uk/data/downloads/ablang-<chain>.tar.gz
-     to download weights (network-restricted sandboxes will fail here).
-  2. The exact CDR residue indices (for masking) and, for the scFv, the exact
-     VH/linker/VL split point -- both come from your own AHo/Chothia/ANARCI
-     numbering step; this script does not derive either on its own. A rough
-     linker-finding heuristic is provided as a *convenience default only*.
 """
 
 import re
@@ -69,7 +61,7 @@ PMPNN_AA20 = PMPNN_ALPHABET[:20]           # drop the trailing 'X' (unknown) for
 
 
 # ---------------------------------------------------------------------------
-# 1. AbLang wrapper -- loads REAL weights, no mocking.
+# 1. AbLang wrapper -- loads weights
 # ---------------------------------------------------------------------------
 class AbLangEnsembleHelper:
     """
@@ -282,12 +274,7 @@ def ensemble_design(
     return S, chain_seqs
 
 
-# ---------------------------------------------------------------------------
-# 3b. Bookkeeping: map "physical PDB chain, local position" -> "Ig domain,
-#     domain-local position". This is the piece that's genuinely different
-#     for a VHH (one domain, no light chain) vs. an scFv (one physical chain
-#     containing two domains back-to-back) vs. a conventional two-chain Fab.
-# ---------------------------------------------------------------------------
+
 def chain_code_map(masked_chains, visible_chains):
     """
     Reproduces tied_featurize's own chain-code assignment (verified in
@@ -405,8 +392,7 @@ def guess_scfv_linker_span(seq: str):
 
 
 # ---------------------------------------------------------------------------
-# 4. Example wiring for BOTH Bennett et al. structures. Fill in cdr_indices
-#    (and, for the scFv, verify the linker span) before running for real.
+# 4. Example wiring for BOTH Bennett et al. structures.
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -417,17 +403,17 @@ if __name__ == "__main__":
     structures = [
         {
             "name": "9NH7 (VHH_flu_01, nanobody -- heavy-only, no light chain)",
-            "pdb_path": "structures/raw/9NH7.pdb",                       # <- fill in
-            "masked_chains": ["E"],                                # the VHH (1 of 2 copies; use "F" for the other)
-            "visible_chains": ["B", "H"],                          # matched HA1 + HA2 protomer (use "A","G" for the other copy)
+            "pdb_path": "structures/raw/9NH7.pdb",                       
+            "masked_chains": ["E"],                                
+            "visible_chains": ["B", "H"],                          
             # whole chain is a single heavy-only Ig domain:
             "domain_layout": {"E": [("H", 0, None)]},
-            "ablang_domains": ("H",),                              # no light chain -> don't even load the light AbLang model
+            "ablang_domains": ("H",),                              
             "cdr_global_indices": [24, 25, 26, 27, 28, 29, 30, 50, 51, 52, 53, 54, 55, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109],                              # <- fill in from your AHo/Chothia numbering of chain E
         },
         {
             "name": "9NFU (scFv6 -- VH + linker + VL fused into one physical chain)",
-            "pdb_path": "structures/raw/9NFU.pdb",                        # <- fill in
+            "pdb_path": "structures/raw/9NFU.pdb",                        
             "masked_chains": ["C"],                                # the scFv
             "visible_chains": ["A"],                               # Toxin B
             # domain_layout for chain C is filled in below at runtime, once
@@ -459,8 +445,6 @@ if __name__ == "__main__":
         domain_layout = struct["domain_layout"]
         if domain_layout is None:
             # scFv case: locate VH/linker/VL split from the actual sequence.
-            # ALWAYS re-verify this against your own ANARCI numbering --
-            # this heuristic only finds a plausible Gly/Ser-rich stretch.
             scfv_chain = struct["masked_chains"][0]
             full_seq = pdb_dict_list[0][f"seq_chain_{scfv_chain}"]
             linker_start, linker_end = guess_scfv_linker_span(full_seq)
@@ -474,8 +458,7 @@ if __name__ == "__main__":
 
         # --- Restrict design to CDR residues only ---
         # GLOBAL positions in tied_featurize's concatenated sequence (masked
-        # chains first, alphabetically). Fill in from your own AHo/Chothia
-        # numbering -- this script does not derive CDR boundaries itself.
+        # chains first, alphabetically).
         cdr_global_indices = struct["cdr_global_indices"]
         if not cdr_global_indices:
             print("  (no cdr_global_indices supplied -- skipping design for this structure)")
