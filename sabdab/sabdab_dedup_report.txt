@@ -1,0 +1,110 @@
+Total sequences read: 21804
+Heavy: 11022 raw -> 5012 duplicates removed -> 6010 final
+Light: 10782 raw -> 5846 duplicates removed -> 4936 final
+Unclassified headers (neither _H nor _L suffix): 0
+Heavy-chain length outliers (outside (95, 145)): 4360
+Light-chain length outliers (outside (85, 130)): 3438
+
+Heavy-chain length outliers (first 50):
+  pdb_000010bt_A_E_ab_A
+  pdb_000010bt_B_F_ab_B
+  pdb_000010bt_C_G_ab_C
+  pdb_000010bt_D_H_ab_D
+  pdb_000010gh_C_B_ab_C
+  pdb_000011hw_C_D_ab_C
+  pdb_000011ol_H_L_ab_H
+  pdb_000011oo_H_L_ab_H
+  pdb_000011oq_H_L_ab_H
+  pdb_000011or_H_L_ab_H
+  pdb_000011ou_H_L_ab_H
+  pdb_000011sz_C_D_ab_C
+  pdb_000011wr_A_B_ab_A
+  pdb_000012er_D_E_ab_D
+  pdb_000012es_D_E_ab_D
+  pdb_000012fc_A_B_ab_A
+  pdb_000012fd_A_B_ab_A
+  pdb_000012fd_C_D_ab_C
+  pdb_000012fe_A_B_ab_A
+  pdb_000012fe_C_L_ab_C
+  pdb_000013bf_H_L_ab_H
+  pdb_000013bs_H_L_ab_H
+  pdb_000013fj_H_L_ab_H
+  pdb_000013fj_I_M_ab_I
+  pdb_000013fl_A_B_ab_A
+  pdb_00001ad0_B_A_ab_B
+  pdb_00001ad9_B_A_ab_B
+  pdb_00001adq_H_L_ab_H
+  pdb_00001aj7_H_L_ab_H
+  pdb_00001aqk_H_L_ab_H
+  pdb_00001axs_B_A_ab_B
+  pdb_00001b2w_H_L_ab_H
+  pdb_00001b4j_H_L_ab_H
+  pdb_00001bbj_B_A_ab_B
+  pdb_00001bey_H_L_ab_H
+  pdb_00001c5b_H_L_ab_H
+  pdb_00001ce1_H_L_ab_H
+  pdb_00001cly_H_L_ab_H
+  pdb_00001d5b_B_A_ab_B
+  pdb_00001d5i_H_L_ab_H
+  pdb_00001dee_B_A_ab_B
+  pdb_00001dfb_H_L_ab_H
+  pdb_00001dn0_B_A_ab_B
+  pdb_00001dn0_D_C_ab_D
+  pdb_00001fl5_B_A_ab_B
+  pdb_00001fvd_B_A_ab_B
+  pdb_00001fve_B_A_ab_B
+  pdb_00001g9m_H_L_ab_H
+  pdb_00001gaf_H_L_ab_H
+  pdb_00001gc1_H_L_ab_H
+
+Light-chain length outliers (first 50):
+  pdb_000010bt_A_E_ab_E
+  pdb_000010gh_C_B_ab_B
+  pdb_000011hw_C_D_ab_D
+  pdb_000011ol_H_L_ab_L
+  pdb_000011oo_H_L_ab_L
+  pdb_000011or_H_L_ab_L
+  pdb_000011ou_H_L_ab_L
+  pdb_000011sz_H_L_ab_L
+  pdb_000011wr_A_B_ab_B
+  pdb_000012er_D_E_ab_E
+  pdb_000012es_D_E_ab_E
+  pdb_000012fc_A_B_ab_B
+  pdb_000012fd_A_B_ab_B
+  pdb_000012fd_C_D_ab_D
+  pdb_000012fe_A_B_ab_B
+  pdb_000013bf_H_L_ab_L
+  pdb_000013bs_H_L_ab_L
+  pdb_000013fj_H_L_ab_L
+  pdb_000013fj_I_M_ab_M
+  pdb_000013fl_A_B_ab_B
+  pdb_00001ad0_B_A_ab_A
+  pdb_00001ad9_B_A_ab_A
+  pdb_00001adq_H_L_ab_L
+  pdb_00001aj7_H_L_ab_L
+  pdb_00001aqk_H_L_ab_L
+  pdb_00001axs_B_A_ab_A
+  pdb_00001b2w_H_L_ab_L
+  pdb_00001b4j_H_L_ab_L
+  pdb_00001bbj_B_A_ab_A
+  pdb_00001bey_H_L_ab_L
+  pdb_00001c5b_H_L_ab_L
+  pdb_00001ce1_H_L_ab_L
+  pdb_00001cly_H_L_ab_L
+  pdb_00001d5b_B_A_ab_A
+  pdb_00001d5i_H_L_ab_L
+  pdb_00001dee_B_A_ab_A
+  pdb_00001dfb_H_L_ab_L
+  pdb_00001dn0_B_A_ab_A
+  pdb_00001fl5_B_A_ab_A
+  pdb_00001fvd_B_A_ab_A
+  pdb_00001g9m_H_L_ab_L
+  pdb_00001gaf_H_L_ab_L
+  pdb_00001gc1_H_L_ab_L
+  pdb_00001h0d_B_A_ab_A
+  pdb_00001hez_B_A_ab_A
+  pdb_00001hzh_H_L_ab_L
+  pdb_00001i7z_B_A_ab_A
+  pdb_00001i9r_H_L_ab_L
+  pdb_00001iga_A_C_ab_C
+  pdb_00001ikf_H_L_ab_L
