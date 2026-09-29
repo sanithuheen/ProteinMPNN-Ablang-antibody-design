@@ -1,5 +1,6 @@
 """
-ProteinMPNN + AbLang ensemble for de novo CDR design (del Alamo et al. 2025 method).
+ProteinMPNN + AbLang ensemble for de novo CDR design (del Alamo et al. 2025 method),
+merged with the batch-runner that writes out full designed sequences.
 
 This reproduces Fig. S1 of del Alamo et al.: for each CDR residue, in a random
 order, ProteinMPNN's structural logits and AbLang's antibody-language-model
@@ -13,10 +14,6 @@ Requirements (install in your own environment, not this sandbox):
     git clone https://github.com/dauparas/ProteinMPNN.git
     # then put the ProteinMPNN/ folder on your PYTHONPATH, e.g.:
     #   export PYTHONPATH=$PYTHONPATH:/path/to/ProteinMPNN
-
-Everything below was checked against the real source of both packages
-(ablang/pretrained.py, ablang/tokenizers.py, ablang/model.py, and
-ProteinMPNN/protein_mpnn_utils.py / protein_mpnn_run.py) rather than assumed.
 
 Bennett et al.'s two publicly deposited structures are NOT a conventional
 two-chain Fab, so a plain "chain H = heavy, chain L = light" mapping does not
@@ -40,9 +37,18 @@ conflated:
 split into Ig domains (for a VHH: the whole chain is domain "H"; for an scFv:
 a "H" segment, then a non-Ig linker segment, then an "L" segment).
 
+This file used to be split across ensemble_pmpnn_ablang.py (the library:
+AbLang wrapper, ProteinMPNN loading, the ensemble decode loop, chain/domain
+bookkeeping) and get_ensemble_sequences.py (batch-runs the ensemble across
+many seeds and writes full-length FASTA + manifest files). They're now one
+file -- ensemble_pmpnn_ablang.py is no longer needed.
 """
 
+import json
+import os
 import re
+from pathlib import Path
+
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -60,6 +66,10 @@ PMPNN_ALPHABET = "ACDEFGHIKLMNPQRSTVWYX"   # verified: protein_mpnn_utils.py lin
 PMPNN_AA20 = PMPNN_ALPHABET[:20]           # drop the trailing 'X' (unknown) for the ensemble sum
 
 
+# =============================================================================
+# PART 1 -- LIBRARY (formerly ensemble_pmpnn_ablang.py)
+# =============================================================================
+
 # ---------------------------------------------------------------------------
 # 1. AbLang wrapper -- loads weights
 # ---------------------------------------------------------------------------
@@ -71,18 +81,35 @@ class AbLangEnsembleHelper:
     vectors can be summed directly.
 
     `domains`: which AbLang model(s) to load. A VHH construct (e.g. 9NH7) has
-    no light chain at all, so pass domains=("H",) to skip downloading/loading
-    the light model entirely.
+    no light chain at all, so pass domains=("H",) to skip loading the light
+    model entirely.
+
+    `weights_dir`: local directory containing the AbLang weight folders --
+    e.g. weights_dir/model-weights-heavy/{amodel.pt,hparams.json,vocab.json}
+    and weights_dir/model-weights-light/{...}. This is exactly the layout
+    ablang's own pretrained() downloads into (verified in ablang/pretrained.py:
+    model_folder = os.path.join(<pkg dir>, "model-weights-{chain}")), so
+    pre-downloaded/copied weights in that same layout are used as-is with no
+    network access. Pass None to fall back to ablang's default "download"
+    behavior (fetches from Oxford's servers if not already cached).
     """
 
     _ABLANG_CHAIN_NAME = {"H": "heavy", "L": "light"}
 
-    def __init__(self, device="cpu", domains=("H", "L")):
+    def __init__(self, device="cpu", domains=("H", "L"), weights_dir=None):
         self.device = device
-        # ablang.pretrained() downloads+caches weights on first use
-        # (see ablang/pretrained.py: model_folder="download").
+
+        def _model_folder(chain_name):
+            if weights_dir is None:
+                return "download"  # ablang's own download-and-cache path
+            return os.path.join(weights_dir, f"model-weights-{chain_name}")
+
         self.models = {
-            d: ablang.pretrained(chain=self._ABLANG_CHAIN_NAME[d], device=device)
+            d: ablang.pretrained(
+                chain=self._ABLANG_CHAIN_NAME[d],
+                model_folder=_model_folder(self._ABLANG_CHAIN_NAME[d]),
+                device=device,
+            )
             for d in domains
         }
         for m in self.models.values():
@@ -274,7 +301,6 @@ def ensemble_design(
     return S, chain_seqs
 
 
-
 def chain_code_map(masked_chains, visible_chains):
     """
     Reproduces tied_featurize's own chain-code assignment (verified in
@@ -391,88 +417,253 @@ def guess_scfv_linker_span(seq: str):
     return best.start(), best.end()
 
 
+# =============================================================================
+# PART 2 -- BATCH RUNNER (formerly get_ensemble_sequences.py)
+# =============================================================================
+
 # ---------------------------------------------------------------------------
-# 4. Example wiring for BOTH Bennett et al. structures.
+# 1. CONFIG
 # ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    checkpoint_path = "ProteinMPNN/vanilla_model_weights/v_48_020.pt"  # matches del Alamo's "vanilla" ProteinMPNN
 
-    # Real chain IDs verified against RCSB/SAbDab for both depositions -- see
-    # the module docstring. Neither structure is a conventional two-chain Fab.
-    structures = [
-        {
-            "name": "9NH7 (VHH_flu_01, nanobody -- heavy-only, no light chain)",
-            "pdb_path": "structures/raw/9NH7.pdb",                       
-            "masked_chains": ["E"],                                
-            "visible_chains": ["B", "H"],                          
-            # whole chain is a single heavy-only Ig domain:
-            "domain_layout": {"E": [("H", 0, None)]},
-            "ablang_domains": ("H",),                              
-            "cdr_global_indices": [24, 25, 26, 27, 28, 29, 30, 50, 51, 52, 53, 54, 55, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109],                              # <- fill in from your AHo/Chothia numbering of chain E
+CHECKPOINT_PATH = "ProteinMPNN/vanilla_model_weights/v_48_020.pt"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+# Parent folder that directly contains "model-weights-heavy" and
+# "model-weights-light" (each holding amodel.pt / hparams.json / vocab.json).
+# <-- SET THIS to your local weights folder's path.
+ABLANG_WEIGHTS_DIR = "ABLANG_MODEL_WEIGHTS"
+
+TEMPERATURE = 0.1
+N_DESIGNS = 100
+SEED_START = 0          # seeds used will be SEED_START .. SEED_START + N_DESIGNS - 1
+
+OUTPUT_DIR = Path("ensemble_sequences")   # where the full-sequence .fa files land
+MANIFEST_DIR = Path("ensemble_sequences/manifests")  # reproducibility logs (params used)
+
+
+STRUCTURES = [
+    {
+        "name": "9NH7",
+        "pdb_path": "structures/raw/9NH7.pdb",
+        "masked_chains": ["E"],           # the VHH
+        "visible_chains": ["B", "H"],     # matched HA1 + HA2 protomer
+        "domain_layout": {"E": [("H", 0, None)]},
+        "ablang_domains": ("H",),
+        "cdr_global_indices": [
+            24, 25, 26, 27, 28, 29, 30,
+            50, 51, 52, 53, 54, 55,
+            97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+        ],
+    },
+    {
+        "name": "9NFU",
+        "pdb_path": "structures/raw/9NFU.pdb",
+        "masked_chains": ["C"],           # the scFv
+        "visible_chains": ["A"],          # Toxin B
+        "domain_layout": {
+            "C": [("H", 0, 93), ("L", 93, None)]
         },
-        {
-            "name": "9NFU (scFv6 -- VH + linker + VL fused into one physical chain)",
-            "pdb_path": "structures/raw/9NFU.pdb",                        
-            "masked_chains": ["C"],                                # the scFv
-            "visible_chains": ["A"],                               # Toxin B
-            # domain_layout for chain C is filled in below at runtime, once
-            # we can read the actual sequence and locate the linker.
-            "domain_layout": {'C': [(None, 0, 9), ('H', 9, 118), (None, 118, 168), ('L', 168, 246), (None, 246, None)]},
-            "ablang_domains": ("H", "L"),
-            "cdr_global_indices": [28, 29, 30, 31, 32, 33, 34, 54, 55, 56, 57, 58, 59, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 168, 169, 170, 171, 172, 173, 189, 190, 191, 192, 193, 194, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237],
-        },
-    ]
+        "ablang_domains": ("H", "L"),
+        "cdr_global_indices": [
+                14, 15, 16, 17, 18, 19, 20,        # CDR-H1
+                40, 41, 42, 43, 44, 45,             # CDR-H2
+                76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,  # CDR-H3
+                101, 102, 103, 104, 105, 106, 107, 108, 109, 110,  # CDR-L1
+                126, 127, 128, 129, 130,             # CDR-L2
+                156, 157, 158, 159, 160, 161, 162, 163, 164, 165,  # CDR-L3
+            ]
+    },
+]
 
-    pmpnn_model = load_proteinmpnn(checkpoint_path, device=device)
 
-    for struct in structures:
-        print(f"\n=== {struct['name']} ===")
+# ---------------------------------------------------------------------------
+# 2. RECONSTRUCT THE FULL PHYSICAL CHAIN FROM THE DESIGNED DOMAIN(S)
+# ---------------------------------------------------------------------------
 
-        pdb_dict_list = parse_PDB(
-            struct["pdb_path"], input_chain_list=struct["masked_chains"] + struct["visible_chains"]
-        )
-        name = pdb_dict_list[0]["name"]
-        chain_id_dict = {name: (struct["masked_chains"], struct["visible_chains"])}
+def build_template_chain_from_S(S_true, chain_encoding_all, code_to_pdb_chain, chain_letter):
+    """
+    Rebuilds `chain_letter`'s full original sequence directly from S_true --
+    the SAME tensor chain_seqs/domain_of_position/domain_local_index are
+    already built from -- instead of the raw parse_PDB-parsed sequence
+    string. This guarantees the framework/linker pieces we splice in below
+    live in the exact same index space as the redesigned CDR pieces, and use
+    the same 'X' convention for missing density that ProteinMPNN/AbMPNN
+    already use (parse_PDB's own text uses '-' for the same thing, and may
+    not even be indexed the same way -- that mismatch was the source of the
+    stray '-' characters).
+    """
+    idx_to_aa = {i: aa for i, aa in enumerate(PMPNN_ALPHABET)}
+    chars = []
+    for pos in range(S_true.shape[1]):
+        code = int(chain_encoding_all[0, pos].item())
+        if code_to_pdb_chain.get(code) == chain_letter:
+            chars.append(idx_to_aa[int(S_true[0, pos].item())])
+    return "".join(chars)
 
-        X, S, mask, lengths, chain_M, chain_encoding_all, letter_list, visible_list, masked_list, \
-            masked_chain_length_list, chain_M_pos, omit_AA_mask, residue_idx, dihedral_mask, \
-            tied_pos_list_of_lists_list, pssm_coef, pssm_bias, pssm_log_odds_all, bias_by_res_all, \
-            tied_beta = tied_featurize([pdb_dict_list[0]], device, chain_id_dict)
 
-        code_to_pdb_chain = {c: letter for letter, c in chain_code_map(struct["masked_chains"], struct["visible_chains"]).items()}
+def reconstruct_full_chain(original_chain_seq, domain_layout_for_chain, final_chain_seqs):
+    """
+    Splices the redesigned per-domain sequences (e.g. {'H': ..., 'L': ...})
+    back into the full original physical chain. Any non-Ig segment (linker,
+    unresolved flanking regions) is copied verbatim from the template, so
+    the result is the same length/format as the ProteinMPNN/AbMPNN .fa
+    outputs -- a real, OASis-numberable antibody chain, not a CDR-only
+    fragment.
+    """
+    pieces = []
+    for domain, start0, end0 in domain_layout_for_chain:
+        end0 = len(original_chain_seq) if end0 is None else end0
+        if domain is None:
+            pieces.append(original_chain_seq[start0:end0])
+        else:
+            pieces.append(final_chain_seqs[domain])
+    return "".join(pieces)
 
-        domain_layout = struct["domain_layout"]
-        if domain_layout is None:
-            # scFv case: locate VH/linker/VL split from the actual sequence.
-            scfv_chain = struct["masked_chains"][0]
-            full_seq = pdb_dict_list[0][f"seq_chain_{scfv_chain}"]
-            linker_start, linker_end = guess_scfv_linker_span(full_seq)
-            print(f"  guessed linker span in chain {scfv_chain}: [{linker_start}, {linker_end}) "
-                  f"-- VERIFY with ANARCI before trusting this")
-            domain_layout = {scfv_chain: [("H", 0, linker_start), (None, linker_start, linker_end), ("L", linker_end, None)]}
 
-        domain_of_position, domain_local_index, chain_seqs = build_position_bookkeeping(
-            S, chain_encoding_all, code_to_pdb_chain, domain_layout, chain_M_pos
-        )
+def finalize_sequence(full_seq, struct, domain_of_position, domain_local_index, final_chain_seqs):
+    """
+    '*' is only meaningful DURING design (it's AbLang's mask token, standing
+    in for 'X' because AbLang's tokenizer rejects X outright). Two different
+    things can leave a '*' in the finished sequence:
+      1. A framework position with genuinely missing density in the original
+         structure -- expected, never redesigned, should just read as 'X'
+         like the ProteinMPNN/AbMPNN outputs already do.
+      2. A CDR position that somehow never got decided -- NOT expected, and
+         worth a loud warning rather than silently masking it as 'X' too.
+    This checks which case applies before doing the '*' -> 'X' swap.
+    """
+    cdr_positions_with_star = []
+    for pos in struct["cdr_global_indices"]:
+        domain, pos0 = domain_of_position[pos], domain_local_index[pos]
+        if final_chain_seqs[domain][pos0] == "*":
+            cdr_positions_with_star.append((domain, pos0))
+    if cdr_positions_with_star:
+        print(f"  WARNING: {len(cdr_positions_with_star)} CDR position(s) were never "
+              f"decided and are being masked as 'X': {cdr_positions_with_star}")
 
-        # --- Restrict design to CDR residues only ---
-        # GLOBAL positions in tied_featurize's concatenated sequence (masked
-        # chains first, alphabetically).
-        cdr_global_indices = struct["cdr_global_indices"]
-        if not cdr_global_indices:
-            print("  (no cdr_global_indices supplied -- skipping design for this structure)")
-            continue
-        chain_seqs = apply_cdr_mask(chain_M_pos, domain_of_position, domain_local_index, chain_seqs, cdr_global_indices)
+    return full_seq.replace("*", "X")
 
-        ablang_helper = AbLangEnsembleHelper(device=device, domains=struct["ablang_domains"])
 
-        S_design, final_chain_seqs = ensemble_design(
+# ---------------------------------------------------------------------------
+# 3. RUN ONE STRUCTURE: FEATURIZE ONCE, DESIGN N_DESIGNS TIMES
+# ---------------------------------------------------------------------------
+
+def run_structure(struct, pmpnn_model):
+    print(f"\n=== {struct['name']} ===")
+
+    pdb_dict_list = parse_PDB(
+        struct["pdb_path"], input_chain_list=struct["masked_chains"] + struct["visible_chains"]
+    )
+    name = pdb_dict_list[0]["name"]
+    chain_id_dict = {name: (struct["masked_chains"], struct["visible_chains"])}
+
+    X, S, mask, lengths, chain_M, chain_encoding_all, letter_list, visible_list, masked_list, \
+        masked_chain_length_list, chain_M_pos, omit_AA_mask, residue_idx, dihedral_mask, \
+        tied_pos_list_of_lists_list, pssm_coef, pssm_bias, pssm_log_odds_all, bias_by_res_all, \
+        tied_beta = tied_featurize([pdb_dict_list[0]], DEVICE, chain_id_dict)
+
+    code_to_pdb_chain = {
+        c: letter for letter, c in
+        chain_code_map(struct["masked_chains"], struct["visible_chains"]).items()
+    }
+
+    domain_of_position, domain_local_index, chain_seqs = build_position_bookkeeping(
+        S, chain_encoding_all, code_to_pdb_chain, struct["domain_layout"], chain_M_pos
+    )
+
+    # Full, un-redesigned original sequence for each masked (antibody) chain --
+    # used later to fill in framework/linker/unresolved regions verbatim.
+    # Built from S_true (not the raw parse_PDB text) so it's guaranteed to be
+    # in the same index space as chain_seqs / domain_local_index.
+    original_seq_by_chain = {
+        c: build_template_chain_from_S(S, chain_encoding_all, code_to_pdb_chain, c)
+        for c in struct["masked_chains"]
+    }
+
+    # This applies the CDR mask ONCE, producing a template with '*' at every
+    # CDR position. We deep-copy this fresh before each seed below, since
+    # ensemble_design() mutates the chain_seqs dict it's given in place.
+    masked_template = apply_cdr_mask(
+        chain_M_pos, domain_of_position, domain_local_index, chain_seqs, struct["cdr_global_indices"]
+    )
+
+    ablang_helper = AbLangEnsembleHelper(
+        device=DEVICE, domains=struct["ablang_domains"], weights_dir=ABLANG_WEIGHTS_DIR
+    )
+
+    the_chain = struct["masked_chains"][0]  # single physical chain for both structures here
+    records = []
+
+    for seed in range(SEED_START, SEED_START + N_DESIGNS):
+        seq_input = {d: s for d, s in masked_template.items()}  # fresh copy for this seed
+
+        _, final_chain_seqs = ensemble_design(
             pmpnn_model, ablang_helper,
             X, S, chain_M, chain_M_pos, mask, residue_idx, chain_encoding_all,
-            domain_of_position, domain_local_index, chain_seqs,
-            temperature=0.1, seed=0,
+            domain_of_position, domain_local_index, seq_input,
+            temperature=TEMPERATURE, seed=seed,
         )
 
-        for domain, seq in final_chain_seqs.items():
-            print(f"  designed {domain}-domain sequence: {seq}")
+        full_seq = reconstruct_full_chain(
+            original_seq_by_chain[the_chain],
+            struct["domain_layout"][the_chain],
+            final_chain_seqs,
+        )
+        full_seq = finalize_sequence(
+            full_seq, struct, domain_of_position, domain_local_index, final_chain_seqs
+        )
+        records.append((seed, full_seq))
+        print(f"  seed {seed}: {full_seq}")
+
+    return records
+
+
+# ---------------------------------------------------------------------------
+# 4. WRITE OUTPUT (FASTA, one record per design) + A REPRODUCIBILITY MANIFEST
+# ---------------------------------------------------------------------------
+
+def write_fasta(struct_name, records):
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = OUTPUT_DIR / f"{struct_name}_ensemble.fa"
+    with open(out_path, "w") as f:
+        for seed, seq in records:
+            f.write(f">{struct_name}_ensemble seed={seed} model=ProteinMPNN+AbLang T={TEMPERATURE}\n")
+            f.write(f"{seq}\n")
+    print(f"  -> wrote {len(records)} designs to {out_path}")
+    return out_path
+
+
+def write_manifest(struct):
+    MANIFEST_DIR.mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "structure": struct["name"],
+        "pdb_path": struct["pdb_path"],
+        "checkpoint_path": CHECKPOINT_PATH,
+        "temperature": TEMPERATURE,
+        "n_designs": N_DESIGNS,
+        "seeds": list(range(SEED_START, SEED_START + N_DESIGNS)),
+        "domain_layout": {k: list(v) for k, v in struct["domain_layout"].items()},
+        "cdr_global_indices": struct["cdr_global_indices"],
+        "ablang_domains": struct["ablang_domains"],
+    }
+    out_path = MANIFEST_DIR / f"{struct['name']}_ensemble_manifest.json"
+    with open(out_path, "w") as f:
+        json.dump(manifest, f, indent=2)
+    print(f"  -> wrote manifest to {out_path}")
+
+
+# ---------------------------------------------------------------------------
+# 5. MAIN
+# ---------------------------------------------------------------------------
+
+def main():
+    pmpnn_model = load_proteinmpnn(CHECKPOINT_PATH, device=DEVICE)
+
+    for struct in STRUCTURES:
+        records = run_structure(struct, pmpnn_model)
+        write_fasta(struct["name"], records)
+        write_manifest(struct)
+
+
+if __name__ == "__main__":
+    main()
