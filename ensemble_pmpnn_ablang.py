@@ -466,12 +466,12 @@ STRUCTURES = [
         },
         "ablang_domains": ("H", "L"),
         "cdr_global_indices": [
-            28, 29, 30, 31, 32, 33, 34,
-            54, 55, 56, 57, 58, 59,
-            101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
-            164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
-            189, 190, 191, 192, 193,
-            228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
+       28, 29, 30, 31, 32, 33, 34,
+        54, 55, 56, 57, 58, 59,
+        101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+        166, 167, 168, 169, 170, 171, 172, 173,
+        189, 190, 191, 192, 193, 194, 195,
+        228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
         ],
     },
 ]
@@ -571,7 +571,7 @@ def run_structure(struct, pmpnn_model):
     domain_of_position, domain_local_index, chain_seqs = build_position_bookkeeping(
         S, chain_encoding_all, code_to_pdb_chain, struct["domain_layout"], chain_M_pos
     )
-   
+    
 
 
     # Full, un-redesigned original sequence for each masked (antibody) chain --
@@ -589,6 +589,9 @@ def run_structure(struct, pmpnn_model):
     masked_template = apply_cdr_mask(
         chain_M_pos, domain_of_position, domain_local_index, chain_seqs, struct["cdr_global_indices"]
     )
+    
+
+
 
     ablang_helper = AbLangEnsembleHelper(
         device=DEVICE, domains=struct["ablang_domains"], weights_dir=ABLANG_WEIGHTS_DIR

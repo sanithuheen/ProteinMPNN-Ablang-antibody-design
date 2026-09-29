@@ -58,7 +58,7 @@ import sys
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROTEINMPNN_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "ProteinMPNN"))
 RAW_STRUCTURES_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "..", "structures", "raw"))
-OUT_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "..","baseline_pmpnn"))
+OUT_DIR = os.path.normpath(os.path.join(SCRIPT_DIR, "..","baseline_pmpnn_results"))
 
 NUM_DESIGNS_PER_STRUCTURE = 100   # matches the ensemble's 100-design batch
 SAMPLING_TEMPERATURE = "0.1"      # matches del Alamo et al.'s methodology
@@ -79,12 +79,12 @@ STRUCTURES = [
         "raw_pdb_path": os.path.join(RAW_STRUCTURES_DIR, "9NFU.pdb"),
         "design_chain": "C",   # the scFv chain (VH+linker+VL fused)
         "cdr_positions": [
-            29, 30, 31, 32, 33, 34, 35,
-            55, 56, 57, 58, 59, 60,
-            102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
-            165, 166, 167, 168, 169, 170, 171, 172, 173, 174,
-            190, 191, 192, 193, 194,
-            229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
+        29, 30, 31, 32, 33, 34, 35,
+        55, 56, 57, 58, 59, 60,
+        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
+        167, 168, 169, 170, 171, 172, 173, 174,
+        190, 191, 192, 193, 194, 195, 196,
+        229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
         ],
     },
 ]

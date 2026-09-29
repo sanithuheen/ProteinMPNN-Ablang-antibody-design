@@ -13,6 +13,8 @@ WHAT "SANE" MEANS HERE, IN PLAIN ENGLISH:
 Run this AFTER run_baseline_proteinmpnn.py has finished.
 """
 
+
+
 import os
 from collections import Counter
 
@@ -22,20 +24,20 @@ STANDARD_AAS = set("ACDEFGHIKLMNPQRSTVWY")
 STRUCTURES = [
     {
         "pdb_id": "9NH7",
-        "fasta_path": "../baseline_pmpnn/9NH7/seqs/9NH7_EBH.fa",
+        "fasta_path": "../baseline_pmpnn_results/9NH7/seqs/9NH7_EBH.fa",
         "cdr_positions": [25, 26, 27, 28, 29, 30, 31, 51, 52, 53, 54, 55, 56,
                            98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
     },
     {
         "pdb_id": "9NFU",
-        "fasta_path": "../baseline_pmpnn/9NFU/seqs/9NFU.fa",
+        "fasta_path": "../baseline_pmpnn_results/9NFU/seqs/9NFU.fa",
         "cdr_positions": [
-            29, 30, 31, 32, 33, 34, 35,
-            55, 56, 57, 58, 59, 60,
-            102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
-            165, 166, 167, 168, 169, 170, 171, 172, 173, 174,
-            190, 191, 192, 193, 194,
-            229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
+        29, 30, 31, 32, 33, 34, 35,
+        55, 56, 57, 58, 59, 60,
+        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113,
+        167, 168, 169, 170, 171, 172, 173, 174,
+        190, 191, 192, 193, 194, 195, 196,
+        229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
         ]
     }
 ]
@@ -127,3 +129,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
