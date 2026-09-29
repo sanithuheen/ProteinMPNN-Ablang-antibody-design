@@ -6,7 +6,7 @@ Usage:
     python filter_pdb_chains.py <input.pdb> <output.pdb> <chain1> <chain2> ...
 
 Example (keep only the VHH + its matched HA1/HA2 protomer for 9NH7):
-    python filter_pdb_chains.py structures/raw/9NH7.pdb structures/raw/9NH7_EBH.pdb E B H
+    python filter_pdb_chains.py ../structures/raw/9NH7.pdb ../structures/raw/9NH7_EBH.pdb E B H
 """
 
 import sys
