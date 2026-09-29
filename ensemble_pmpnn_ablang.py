@@ -455,23 +455,24 @@ STRUCTURES = [
             97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
         ],
     },
-    {
+        {
+            
         "name": "9NFU",
         "pdb_path": "structures/raw/9NFU.pdb",
-        "masked_chains": ["C"],           # the scFv
-        "visible_chains": ["A"],          # Toxin B
+        "masked_chains": ["C"],
+        "visible_chains": ["A"],
         "domain_layout": {
-            "C": [("H", 0, 93), ("L", 93, None)]
+            "C": [("H", 0, 145), ("L", 145, None)]
         },
         "ablang_domains": ("H", "L"),
         "cdr_global_indices": [
-                14, 15, 16, 17, 18, 19, 20,        # CDR-H1
-                40, 41, 42, 43, 44, 45,             # CDR-H2
-                76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,  # CDR-H3
-                101, 102, 103, 104, 105, 106, 107, 108, 109, 110,  # CDR-L1
-                126, 127, 128, 129, 130,             # CDR-L2
-                156, 157, 158, 159, 160, 161, 162, 163, 164, 165,  # CDR-L3
-            ]
+            28, 29, 30, 31, 32, 33, 34,
+            54, 55, 56, 57, 58, 59,
+            101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112,
+            164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
+            189, 190, 191, 192, 193,
+            228, 229, 230, 231, 232, 233, 234, 235, 236, 237,
+        ],
     },
 ]
 
@@ -570,6 +571,8 @@ def run_structure(struct, pmpnn_model):
     domain_of_position, domain_local_index, chain_seqs = build_position_bookkeeping(
         S, chain_encoding_all, code_to_pdb_chain, struct["domain_layout"], chain_M_pos
     )
+   
+
 
     # Full, un-redesigned original sequence for each masked (antibody) chain --
     # used later to fill in framework/linker/unresolved regions verbatim.
