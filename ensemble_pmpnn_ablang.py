@@ -144,7 +144,7 @@ class AbLangEnsembleHelper:
         # likelihood() returns raw AbHead logits (no softmax -- confirmed in
         # ablang/model.py: AbHead.forward has no activation on its output),
         # shape (1, len(seq), 20), columns in AbLang's own vocab order.
-        raw = model(masked_seq, mode="likelihood")[0, pos0, :]   # (20,)
+        raw = model(masked_seq, mode="likelihood")[0, pos0 + 1, :]   # (20,)
         return raw[self.reorder_idx[domain]]
 
 
