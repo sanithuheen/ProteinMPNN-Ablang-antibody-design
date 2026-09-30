@@ -462,7 +462,7 @@ STRUCTURES = [
         "masked_chains": ["C"],
         "visible_chains": ["A"],
         "domain_layout": {
-            "C": [("H", 0, 145), ("L", 145, None)]
+            "C": [(None, 0, 3), ("H", 3, 124), (None, 124, 143), ("L", 143, None)]
         },
         "ablang_domains": ("H", "L"),
         "cdr_global_indices": [
@@ -630,10 +630,10 @@ def run_structure(struct, pmpnn_model):
 
 def write_fasta(struct_name, records):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"{struct_name}_ensemble.fa"
+    out_path = OUTPUT_DIR / f"{struct_name}.fa"
     with open(out_path, "w") as f:
         for seed, seq in records:
-            f.write(f">{struct_name}_ensemble seed={seed} model=ProteinMPNN+AbLang T={TEMPERATURE}\n")
+            f.write(f">{struct_name} seed={seed} model=ProteinMPNN+AbLang T={TEMPERATURE}\n")
             f.write(f"{seq}\n")
     print(f"  -> wrote {len(records)} designs to {out_path}")
     return out_path
