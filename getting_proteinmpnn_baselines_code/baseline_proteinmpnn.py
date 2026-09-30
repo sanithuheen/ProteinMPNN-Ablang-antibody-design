@@ -124,6 +124,12 @@ def force_clean_name(parsed_jsonl, clean_name):
     if old_name != clean_name:
         print(f"  fixed structure name in parsed.jsonl: {old_name!r} -> {clean_name!r}")
 
+def strip_native_record(fasta_path):
+    """Remove the first 2 lines (native header + native sequence)."""
+    with open(fasta_path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    with open(fasta_path, "w", encoding="utf-8", newline="\n") as f:
+        f.writelines(lines[2:])
 
 def design_one_structure(struct, helper_scripts_dir, main_script_path):
     pdb_id = struct["pdb_id"]
@@ -205,6 +211,7 @@ def design_one_structure(struct, helper_scripts_dir, main_script_path):
     fasta_path = os.path.join(struct_out_dir, "seqs", f"{pdb_stem}.fa")
     if not os.path.exists(fasta_path):
         raise FileNotFoundError(f"ProteinMPNN finished but {fasta_path} was not created.")
+    strip_native_record(fasta_path)
     print(f"Done. Designs written to: {fasta_path}")
     return fasta_path
 
