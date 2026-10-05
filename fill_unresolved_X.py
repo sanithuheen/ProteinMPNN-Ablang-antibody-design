@@ -27,9 +27,9 @@ EXPECTED_OFFSET = {                  # None = accept whatever is detected
     "9NH7": 4,
 }
 
-MIN_MATCH        = 0.75   # agreement at non-X positions
-MIN_MARGIN       = 0.15   # best offset must beat the runner-up offset by this
-MIN_CHAIN_MARGIN = 0.10   # best chain must beat the runner-up chain by this
+MIN_MATCH        = 0.60   # agreement at non-X positions
+MIN_MARGIN       = 0.30   # best offset must beat the runner-up offset by this
+MIN_CHAIN_MARGIN = 0.30   # best chain must beat the runner-up chain by this
 # ----------------------------------------
 
 import os, glob
