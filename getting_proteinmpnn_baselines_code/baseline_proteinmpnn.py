@@ -20,7 +20,7 @@ WHY THE WINDOWS FIXES ARE HERE:
   last "/". On Windows this goes wrong in two places:
     1. parse_multiple_chains.py uses glob, which returns "folder/file.pdb"
        with a BACKSLASH before the filename on Windows, so the saved name is
-       junk like "parse_input\\9NH7_EBH" instead of "9NH7_EBH".
+       junk like "parse_input\\9NH7" instead of "9NH7".
        -> we rewrite the name in parsed.jsonl to the clean file name.
     2. protein_mpnn_run.py looks for its weights folder the same way and
        builds a garbage path -> we pass --path_to_model_weights explicitly.
@@ -31,7 +31,7 @@ BEFORE RUNNING:
   Paths below are relative to THIS script's folder, so it works no matter
   where you launch it from. Expected layout (siblings of this script's folder):
       ../ProteinMPNN/            <- your git clone
-      ../structures/raw/         <- has 9NH7_EBH.pdb and 9NFU.pdb
+      ../structures/raw/         <- has 9NH7.pdb and 9NFU.pdb
   Environment (run once):
       conda create -n pmpnn python=3.10 -y
       conda activate pmpnn

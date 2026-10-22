@@ -65,8 +65,8 @@ PREDICTIONS = {
 }
 
 # --- Where results go ---
-OUT_CSV = "cdr_rmsd_results.csv"
-OUT_FRAMEWORK_CSV = "cdr_rmsd_framework.csv"
+OUT_CSV = "RSMD_RESULTS/cdr_rmsd_results.csv"
+OUT_FRAMEWORK_CSV = "RSMD_RESULTS/cdr_rmsd_framework.csv"
 
 # --- Ig domains, by AUTHOR residue number in the reference chain ---
 # (lo, hi) is inclusive-lo / exclusive-hi; None means "no bound".

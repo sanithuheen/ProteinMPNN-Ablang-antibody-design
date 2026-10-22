@@ -1,0 +1,5 @@
+structure,method,n_paired,n_unique_oasis_values,n_unique_sequences,spearman_rho,p_asymptotic,p_permutation,oasis_median,rmsd_median_A,q_BH_within_E1
+9NH7,baseline,100,6,,0.1916,5.616e-02,5.762e-02,0.5981,0.896,7.683e-02
+9NH7,ensemble,100,10,,0.2288,2.204e-02,2.236e-02,0.8131,2.275,4.472e-02
+9NFU,baseline,100,7,,0.0006,9.951e-01,9.956e-01,0.6549,2.939,9.956e-01
+9NFU,ensemble,100,21,,-0.269,6.806e-03,7.120e-03,0.8584,3.059,2.848e-02

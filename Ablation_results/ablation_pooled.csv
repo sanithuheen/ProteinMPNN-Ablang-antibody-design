@@ -1,0 +1,3 @@
+struct,cond,n_pairs,mean_delta,sd_delta,score_col,scores_file
+all,cdrh3,200,0.057089157224381765,0.010029299179206353,Heavy OASis Identity,oasis_scores.csv
+all,others,200,0.11798941361343149,0.042246502399732044,Heavy OASis Identity,oasis_scores.csv

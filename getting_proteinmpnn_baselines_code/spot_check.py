@@ -22,9 +22,9 @@ STANDARD_AAS = set("ACDEFGHIKLMNPQRSTVWY")
 
 # Must match STRUCTURES in run_baseline_proteinmpnn.py
 STRUCTURES = [
-    {
+    { 
         "pdb_id": "9NH7",
-        "fasta_path": "../baseline_pmpnn_results/9NH7/seqs/9NH7_EBH.fa",
+        "fasta_path": "../baseline_pmpnn_results/9NH7/seqs/9NH7.fa",
         "cdr_positions": [25, 26, 27, 28, 29, 30, 31, 32,
         50, 51, 52, 53, 54, 55, 56, 57,
         96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110,],

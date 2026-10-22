@@ -39,7 +39,7 @@
         109,
         110
       ],
-      "fasta_output": "c:/Users/sanit/Desktop/Algoverse/AI biology/github/baseline_pmpnn_results/9NH7/seqs/9NH7_EBH.fa"
+      "fasta_output": "/home/sanithu/desktop/Algoverse/AI Biology/ProteinMPNN-Ablang-antibody-design/baseline_pmpnn_results/9NH7/seqs/9NH7_EBH.fa"
     },
     "9NFU": {
       "design_chain": "C",
@@ -92,7 +92,7 @@
         237,
         238
       ],
-      "fasta_output": "c:/Users/sanit/Desktop/Algoverse/AI biology/github/baseline_pmpnn_results/9NFU/seqs/9NFU.fa"
+      "fasta_output": "/home/sanithu/desktop/Algoverse/AI Biology/ProteinMPNN-Ablang-antibody-design/baseline_pmpnn_results/9NFU/seqs/9NFU.fa"
     }
   }
 }

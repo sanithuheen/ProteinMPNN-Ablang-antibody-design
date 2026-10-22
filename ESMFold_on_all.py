@@ -24,6 +24,9 @@ import time
 import torch
 from transformers import AutoTokenizer, EsmForProteinFolding
 
+import sys
+from huggingface_hub import snapshot_download
+from huggingface_hub.utils import enable_progress_bars
 # ----------------------------- CONFIG --------------------------------------
 # method name -> {structure -> FASTA path}. Edit the paths to match your folders.
 # Missing files are skipped with a message.
@@ -66,10 +69,18 @@ def get_model():
     if not torch.cuda.is_available():
         raise SystemExit("No CUDA device visible to torch -- check your WSL2 GPU passthrough.")
 
-    print(f"Loading {MODEL_NAME} (first run downloads ~2.6GB)...", flush=True)
+    print(f"Loading {MODEL_NAME}...", flush=True)
     t0 = time.time()
-    _tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    _model = EsmForProteinFolding.from_pretrained(MODEL_NAME, low_cpu_mem_usage=True)
+
+    # Fetch the weights first so the download shows a live progress bar
+    # (per-file percentage, MB done, and speed). On later runs everything
+    # is already cached and this returns almost instantly.
+    enable_progress_bars()
+    local_dir = snapshot_download(MODEL_NAME)
+    print(f"  weights ready in {local_dir}", flush=True)
+
+    _tokenizer = AutoTokenizer.from_pretrained(local_dir)
+    _model = EsmForProteinFolding.from_pretrained(local_dir, low_cpu_mem_usage=True)
     _model = _model.cuda()
     _model.eval()
 
