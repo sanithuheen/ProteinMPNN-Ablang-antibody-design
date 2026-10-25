@@ -1,0 +1,4 @@
+structure,cdr,n_baseline,n_ensemble,median_baseline,median_ensemble,median_diff_ens_minus_base,ci_low,ci_high,U,p,cliffs_delta,p_fdr_bh,significant_fdr_0.05
+9NFU,VH,100,100,0.714,0.696,-0.018,-0.022,-0.009,2026.5,1.0157553126552822e-13,-0.595,1.5236329689829233e-13,True
+9NFU,VL,100,100,0.625,0.635,0.01,0.0,0.021,6339.5,0.0008753605710163223,0.268,0.0008753605710163223,True
+9NH7,VHH,100,100,0.617,0.64,0.023,0.019,0.028,8794.0,4.253195959238015e-21,0.759,1.2759587877714045e-20,True
