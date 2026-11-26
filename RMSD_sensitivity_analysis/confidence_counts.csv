@@ -1,0 +1,7 @@
+structure,method,total,retained,excluded
+9NFU,abmpnn,100,10,90
+9NFU,baseline,100,100,0
+9NFU,ensemble,100,82,18
+9NH7,abmpnn,100,7,93
+9NH7,baseline,100,100,0
+9NH7,ensemble,100,68,32
